@@ -21,6 +21,7 @@
   <script src="article-media-local.js" defer></script>
   <script src="article-media.js" defer></script>
   <script src="site.js" defer></script>
+  <script src="share-card.js" defer></script>
   <script src="game.js" defer></script>
   <title>WikiRNG — Daily Wikipedia Card Draw</title>
 </head>
@@ -92,7 +93,10 @@
             <div class="result-copy">
               <p class="fine" id="quiz-feedback" hidden></p>
               <div class="result-links">
-                <button class="text-button" type="button" id="share-button"><span aria-hidden="true">⤴</span> Share result</button>
+                <button class="text-button share-trigger" type="button" id="share-button">
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m8.5 10.5 7-4m-7 7 7 4"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="5" r="2.5"/><circle cx="18" cy="19" r="2.5"/></svg>
+                  Share result
+                </button>
               </div>
               <p class="excerpt-credit" id="result-credit" hidden><a id="revision-link" target="_blank" rel="noopener noreferrer">Wikipedia contributors</a> · edited excerpt · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></p>
               <details class="media-credits" id="media-credits" data-media-credits hidden>
@@ -298,7 +302,7 @@
         <details open><summary>How often can I draw?</summary><p>Submit one answer per UTC day to draw a card. A correct answer opens all five tiers. An incorrect answer earns a Silver or Bronze card. <a href="#odds">Compare the rarity odds.</a></p></details>
         <details><summary>How are points earned?</summary><p>Every article starts at 100 points. Traits in the edition earn badges. Only the highest-scoring badge counts in each of the topic, title and article metadata groups. Rarity follows pageviews.</p></details>
         <details><summary>What does “top of the pool” mean?</summary><p>It compares article scores in the edition, including ties. The score shows how unusual the article’s badge traits are within this edition.</p></details>
-        <details><summary>Where are my discoveries saved?</summary><p>Daily results stay in this browser’s local storage. Clearing site data or switching browsers separates your journal. You can share a result as text without publishing your journal.</p></details>
+        <details><summary>Where are my discoveries saved?</summary><p>Daily results stay in this browser’s local storage. Clearing site data or switching browsers separates your journal. Share result lets you export just the selected card and its links.</p></details>
         <details><summary>Where do the discoveries come from?</summary><p>This edition is a sample from the English Wikipedia featured article index, with excerpts and metadata from Wikipedia. Each result shows its source and edition. Older draws keep the score and size of their original pool. <a href="#pool" data-view="pool">Browse the current pool.</a></p></details>
       </div>
     </section>
@@ -371,10 +375,32 @@
     <input id="install-url" type="url" value="https://wikirng.org/" aria-label="WikiRNG site link" readonly hidden>
   </dialog>
   <dialog id="share-dialog" aria-labelledby="share-title">
-    <div class="dialog-title"><h2 id="share-title">Share this discovery</h2><form method="dialog"><button class="plain-close" aria-label="Close" type="submit">×</button></form></div>
-    <label for="share-text">Result text</label>
-    <textarea id="share-text" rows="5" readonly></textarea>
-    <button class="primary" type="button" id="copy-result">Copy result</button>
+    <div class="dialog-title"><h2 id="share-title">Share this discovery</h2><form method="dialog"><button class="plain-close" aria-label="Close share dialog" type="submit">×</button></form></div>
+    <div class="share-preview"><canvas id="share-canvas" width="1080" height="1350" role="img" aria-label="Preview of the WikiRNG share card"></canvas></div>
+    <div class="share-links">
+      <a id="share-site" href="https://wikirng.org/" target="_blank" rel="noopener noreferrer">https://wikirng.org/</a>
+      <a id="share-wikipedia" target="_blank" rel="noopener noreferrer"></a>
+    </div>
+    <div class="share-actions" role="group" aria-label="Share or save the card">
+      <button class="outline" type="button" id="share-download" disabled><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>Download image</button>
+      <button class="primary" type="button" id="share-native" disabled><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m8.5 10.5 7-4m-7 7 7 4"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="5" r="2.5"/><circle cx="18" cy="19" r="2.5"/></svg>Share image + link</button>
+      <button class="outline" type="button" id="share-copy"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m10 14 4-4m-6.4 6.4-1 1a3.5 3.5 0 0 1-5-5l4-4a3.5 3.5 0 0 1 5 0m5.8-.8 1-1a3.5 3.5 0 0 1 5 5l-4 4a3.5 3.5 0 0 1-5 0" transform="translate(0 1)"/></svg>Copy site link</button>
+    </div>
+    <div class="share-platforms" role="group" aria-label="Social sharing shortcuts">
+      <a class="outline" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" title="Open TikTok"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M14 3h3c.2 2.4 1.9 4 4 4.4v3.1c-1.5-.1-2.8-.6-4-1.5v7.1a5.6 5.6 0 1 1-5.6-5.6h.7v3.1h-.7a2.5 2.5 0 1 0 2.6 2.5z"/></svg>TikTok</a>
+      <a class="outline" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" title="Open YouTube"><svg aria-hidden="true" viewBox="0 0 24 24" fill="#c61a29"><path d="M20 5.4c1.2.3 1.8 1 2 2.2.4 2.3.4 6.5 0 8.8-.2 1.2-.8 1.9-2 2.2-2.4.6-13.6.6-16 0-1.2-.3-1.8-1-2-2.2-.4-2.3-.4-6.5 0-8.8.2-1.2.8-1.9 2-2.2 2.4-.6 13.6-.6 16 0Z"/><path d="M10 8.7v6.6l5.7-3.3z" fill="#fff"/></svg>YouTube</a>
+      <a class="outline" id="share-x" href="https://twitter.com/intent/tweet" target="_blank" rel="noopener noreferrer" title="Draft a post on X"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3h5l4.2 6 5-6h2l-6.1 7.3L21 21h-5l-4.6-6.6L6 21H4l6.5-7.9zm3 1.6 9.8 14.8H18L8.2 4.6z"/></svg>X</a>
+      <a class="outline" id="share-reddit" href="https://www.reddit.com/submit" target="_blank" rel="noopener noreferrer" title="Draft a link on Reddit"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#bd4118"/><g fill="#fff"><ellipse cx="12" cy="13.3" rx="6.2" ry="4"/><circle cx="6.2" cy="12" r="1.5"/><circle cx="17.8" cy="12" r="1.5"/><circle cx="16.3" cy="7.2" r="1.3"/></g><path d="m12 10 1.1-3.6 2.1.5m-5 8.1c.8.7 2.8.7 3.6 0" fill="none" stroke="#fff" stroke-linecap="round"/><path d="M9.6 12.9h.1m4.6 0h.1m-4.1 2a3.8 3.8 0 0 0 3.4 0" fill="none" stroke="#a63b17" stroke-width="1.2" stroke-linecap="round"/></svg>Reddit</a>
+      <a class="outline" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" title="Open Instagram"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#a33369" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.1" cy="6.9" r=".8" fill="#a33369" stroke="none"/></svg>Instagram</a>
+    </div>
+    <p class="share-help">X and Reddit open link drafts. To post a PNG, use your device’s share menu or download and attach it in the app.</p>
+    <p id="share-status" class="fine" role="status"></p>
+    <details class="share-caption" id="share-caption">
+      <summary>Caption and credits</summary>
+      <textarea id="share-text" rows="5" readonly aria-label="Share caption and image credits"></textarea>
+      <button class="outline" type="button" id="share-copy-caption">Copy caption</button>
+    </details>
+    <input type="url" id="share-copy-fallback" readonly aria-label="WikiRNG site link" hidden>
   </dialog>
   <p id="announcer" class="sr-only" role="status" aria-live="polite"></p>
 </body>

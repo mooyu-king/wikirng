@@ -145,9 +145,9 @@ const articleMedia = (() => {
     active.delete(target);
   }
 
-  async function getImages(article) {
+  async function getImages(article, useBundled = true) {
     const key = article.id ?? article.slug;
-    if (Object.hasOwn(localArticleMedia, article.title)) return localArticleMedia[article.title];
+    if (useBundled && Object.hasOwn(localArticleMedia, article.title)) return localArticleMedia[article.title];
     if (cache.has(key)) return cache.get(key);
     if (pending.has(key)) return pending.get(key);
     const controller = new AbortController();
@@ -209,5 +209,5 @@ const articleMedia = (() => {
     coverObserver?.disconnect();
   }
 
-  return { clear, show, cover, clearCovers };
+  return { clear, show, cover, clearCovers, getImages };
 })();

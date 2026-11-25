@@ -512,21 +512,13 @@ async function startDaily(selected) {
 
 function openShare() {
   if (!revealed) return;
-  byId('share-text').value = 'My WikiRNG daily discovery: ' + revealed.title + '\n' + revealed.score + ' points · ' +
-    rarityName(revealed) + '\n' + sourceFor(revealed);
-  byId('share-dialog').showModal();
-}
-
-async function copyResult() {
-  const field = byId('share-text');
-  try {
-    await navigator.clipboard.writeText(field.value);
-    byId('copy-result').textContent = 'Copied';
-  } catch {
-    field.focus();
-    field.select();
-    byId('copy-result').textContent = 'Text selected';
-  }
+  shareCard.open(revealed, {
+    rarity: rarityName(revealed),
+    summary: conciseSummary(revealed.summary),
+    wikipedia: sourceFor(revealed),
+    date: byId('result-date').textContent,
+    icon: byId('result-card-type').querySelector('.rarity-icon')
+  });
 }
 
 for (const tier of drawRules.tiers) {
@@ -566,8 +558,6 @@ byId('collection-dialog').addEventListener('close', () => {
   if (!byId('collection-dialog').open) articleMedia.clear(byId('collection-unlocked'));
 });
 byId('share-button').addEventListener('click', openShare);
-byId('copy-result').addEventListener('click', copyResult);
-byId('share-dialog').addEventListener('close', () => { byId('copy-result').textContent = 'Copy result'; });
 window.addEventListener('hashchange', () => showView(true));
 window.addEventListener('storage', (event) => {
   if (event.key !== null && ![dayKeyPrefix, oldDayKeyPrefix].some((prefix) => event.key.startsWith(prefix))) return;

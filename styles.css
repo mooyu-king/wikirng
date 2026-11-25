@@ -236,6 +236,35 @@ dialog p, dialog label { margin: 12px 0; display: block; }
 .dialog-title { display: flex; gap: 16px; justify-content: space-between; align-items: center; }
 .quiz-options { display: grid; gap: 8px; }
 .quiz-options button { width: 100%; }
+.share-trigger svg, .share-actions svg, .share-platforms svg { width: 18px; height: 18px; flex: none; }
+#share-dialog { width: min(610px, calc(100% - 20px)); max-width: none; max-height: calc(100% - 20px); overflow: auto; padding: clamp(12px, 3.5vw, 22px); }
+#share-dialog .dialog-title { gap: 8px; margin-bottom: 12px; }
+#share-dialog .plain-close { flex: none; }
+.share-preview { display: grid; place-items: center; padding: 8px; border-radius: 12px; background: #ebeee5; }
+.share-preview canvas { display: block; width: min(100%, 290px, 40vh); height: auto; border: 1px solid #c3cfbb; border-radius: 8px; background: #1c322a; }
+.share-links { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 6px 14px; margin: 3px 0 7px; }
+.share-links a { display: flex; align-items: center; min-height: 44px; color: var(--pine); font-size: .83rem; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.share-actions, .share-platforms { display: grid; gap: 6px; }
+.share-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.share-platforms { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 9px; }
+.share-actions button, .share-platforms a { min-width: 0; padding-inline: 5px; font-size: .85rem; gap: 5px; }
+.share-platforms a { flex-direction: column; padding-block: 6px; font-size: .73rem; }
+.share-platforms svg { width: 20px; height: 20px; }
+#share-dialog .share-help, #share-status { margin-block: 9px; color: var(--muted); font-size: .82rem; text-align: justify; text-align-last: start; }
+#share-status:empty { margin: 0; }
+.share-caption { padding-inline: 11px; }
+.share-caption summary { min-height: 44px; padding-block: 12px; font-size: .83rem; }
+.share-caption button { margin-bottom: 8px; }
+#share-copy-fallback { width: 100%; min-height: 44px; margin-top: 7px; padding: 6px; border: 1px solid var(--line); border-radius: 8px; }
+@media (max-width: 520px) {
+  .share-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .share-actions button:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 385px) {
+  .share-links { grid-template-columns: 1fr; gap: 0; }
+  .share-platforms { gap: 4px; }
+  .share-platforms a { padding-inline: 2px; font-size: .67rem; }
+}
 .plain-close { height: 44px; width: 44px; border: 0; border-radius: 8px; background: #e6ebde; color: var(--ink); font-size: 1.5rem; }
 textarea { width: 100%; resize: vertical; padding: 10px; background: white; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); }
 .info-content { padding-block: 35px; max-width: 800px; }
