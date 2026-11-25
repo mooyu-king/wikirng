@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Learn about WikiRNG, the independent daily Wikipedia card game, its pageview data, and its sources and licenses.">
+  <link rel="canonical" href="https://wikirng.org/about/">
+  <meta name="theme-color" content="#f6f3eb">
+  <link rel="icon" type="image/png" sizes="32x32" href="/brand/icon-32.png">
+  <link rel="apple-touch-icon" href="/brand/icon-192.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/site.js" defer></script>
+  <title>About Us — WikiRNG</title>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="/#daily" aria-label="WikiRNG home"><img class="brand-logo" src="/brand/icon-192.png" width="36" height="36" alt="">WikiRNG</a>
+      <nav aria-label="Game">
+        <a href="/#daily" data-view="daily">Daily Draw</a>
+        <a href="/#journal" data-view="journal">Achievements</a>
+        <a href="/#guide" data-view="guide">How to Play</a>
+      </nav>
+      <button class="outline install" id="install-open" type="button"><span aria-hidden="true">↓</span> Install App</button>
+    </div>
+  </header>
+  <main id="main" class="shell info-content">
+    <header class="section-heading"><h1>About Us</h1></header>
+    <section><p>WikiRNG is an independent browser game for discovering English Wikipedia articles. Answer one quick question each day, reveal an illustrated card, and collect what you discover. You can browse the article pool between daily draws.</p>
+      <p>WikiRNG is independently made and has no affiliation with Wikipedia or the Wikimedia Foundation. Results describe a curated deck, and the game identifies the data and sources used in each edition.</p></section><section id="sources"><h2>Sources and licenses</h2>
+      <p>The edition samples the <a href="https://en.wikipedia.org/wiki/Wikipedia:Featured_articles">English Wikipedia featured article index</a>. The game uses daily counts from <a href="https://www.mediawiki.org/wiki/Extension:PageViewInfo">MediaWiki PageViewInfo</a> to rank entries with a complete month of records.</p>
+      <p>Wikipedia contributors wrote the excerpts. WikiRNG trims them to fit the card and links to the source article and saved revision where available. The excerpts remain available under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Media credits identify the author, original Wikimedia Commons file and its license. Article images may be resized or cropped to fit their frames. The game’s original cover and logo are AI-generated illustrations.</p></section>
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div><a class="brand" href="/#daily" data-view="daily"><img class="brand-logo" src="/brand/icon-192.png" width="36" height="36" alt="">WikiRNG</a><p>An independent Wikipedia card game.</p></div>
+      <div><h2>Play</h2><a href="/#daily" data-view="daily">Daily Draw</a><a href="/#journal" data-view="journal">Achievements</a></div>
+      <div><h2>Learn</h2><a href="/#guide" data-view="guide">How to Play</a><a href="/#pool" data-view="pool">Article Pool</a><a href="/about/#sources">Sources</a></div>
+      <div><h2>Information</h2><a href="/about/">About Us</a><a href="/privacy/">Privacy Policy</a><a href="/contact/">Contact</a><a href="/terms/">Terms of Service</a></div>
+    </div>
+    <div class="shell footer-bottom">WikiRNG.org</div>
+  </footer>
+  <dialog id="install-dialog" aria-labelledby="install-title">
+    <div class="dialog-title"><h2 id="install-title">Install WikiRNG</h2><form method="dialog"><button class="plain-close" aria-label="Close" type="submit">×</button></form></div>
+    <p>Use your browser’s menu to install WikiRNG or add it to your home screen. On iPhone or iPad, open Share in Safari and choose Add to Home Screen.</p>
+    <button class="outline" id="copy-link" type="button">Copy site link</button>
+    <button class="primary" id="native-install" type="button" hidden>Install now</button>
+    <input id="install-url" type="url" value="https://wikirng.org/" aria-label="WikiRNG site link" readonly hidden>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "wikirng-org",
+  "compatibility_date": "2025-01-15",
+  "assets": {
+    "directory": ".",
+    "html_handling": "force-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

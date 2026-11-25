@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Play WikiRNG free online. Answer a quick quiz, draw a daily Wikipedia card from five rarity tiers, and build your personal collection.">
+  <link rel="canonical" href="https://wikirng.org/">
+  <meta property="og:title" content="WikiRNG — Daily Wikipedia Card Draw">
+  <meta property="og:description" content="Answer the daily quiz, draw a Wikipedia article card, and fill your collection.">
+  <meta property="og:url" content="https://wikirng.org/">
+  <meta property="og:image" content="https://wikirng.org/archive-cover.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="brand/icon-32.png">
+  <link rel="apple-touch-icon" href="brand/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#f6f3eb">
+  <link rel="stylesheet" href="styles.css">
+  <script src="articles.js" defer></script>
+  <script src="edition.js" defer></script>
+  <script src="pageviews.js" defer></script>
+  <script src="draw-rules.js" defer></script>
+  <script src="article-media-local.js" defer></script>
+  <script src="article-media.js" defer></script>
+  <script src="site.js" defer></script>
+  <script src="game.js" defer></script>
+  <title>WikiRNG — Daily Wikipedia Card Draw</title>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to game</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#daily" aria-label="WikiRNG home"><img class="brand-logo" src="brand/icon-192.png" width="36" height="36" alt="">WikiRNG</a>
+      <nav aria-label="Game">
+        <a href="#daily" data-view="daily" aria-current="page">Daily Draw</a>
+        <a href="#journal" data-view="journal">Achievements</a>
+        <a href="#guide" data-view="guide">How to Play</a>
+      </nav>
+      <button class="outline install" id="install-open" type="button"><span aria-hidden="true">↓</span> Install App</button>
+    </div>
+  </header>
+
+  <main id="main" class="shell">
+    <section class="screen" id="daily" aria-labelledby="daily-title">
+      <header class="section-heading">
+        <div>
+          <h1 id="daily-title">WikiRNG Daily Draw</h1>
+          <p>Play WikiRNG free online. Take a quiz and collect a real Wikipedia article card.</p>
+        </div>
+        <div class="date-stamp"><span class="date-icon" aria-hidden="true">◷</span><div><span id="today-label">Today · UTC</span><small>New draw at 00:00 UTC</small></div></div>
+      </header>
+
+      <div class="game-grid">
+        <div class="game-column">
+          <article class="draw-card" id="draw-card" aria-labelledby="draw-heading">
+            <div class="draw-content">
+              <div class="unlock-banner">
+                <h2 class="knowledge-kicker" id="draw-heading">Complete Today’s Quiz</h2>
+                <p class="unlock-subtitle">Answer one question to unlock today’s card.</p>
+              </div>
+              <div class="draw-deck" aria-hidden="true"><span>WikiRNG</span><small>Field Collection</small></div>
+              <button class="primary" id="draw-button" type="button"><span aria-hidden="true">✧</span><span id="draw-button-label">Start Today’s Quiz</span></button>
+            </div>
+          </article>
+          <article class="result-card" id="result" aria-labelledby="result-title" hidden>
+            <div class="knowledge-stage" id="knowledge-stage">
+              <div class="unlock-banner">
+                <p class="knowledge-kicker" id="result-mode"></p>
+                <p class="unlock-subtitle" id="result-unlock"></p>
+              </div>
+              <div class="article-gallery" id="article-gallery" data-media-gallery role="group" aria-label="Images from this article"></div>
+              <div class="knowledge-frame">
+                <div class="knowledge-flipper" id="knowledge-flipper">
+                  <div class="knowledge-back" aria-hidden="true"><span>WikiRNG</span><small>Field Collection</small></div>
+                  <div class="knowledge-front">
+                    <p class="knowledge-collection">WikiRNG Field Collection</p>
+                    <h2 id="result-title" tabindex="-1"></h2>
+                    <p class="knowledge-summary" id="result-description" lang="en"></p>
+                    <dl class="knowledge-details">
+                      <div><dt>Rarity</dt><dd id="result-card-type"></dd></div>
+                      <div><dt>Topic</dt><dd id="result-topic"></dd></div>
+                      <div><dt>Pageviews</dt><dd id="result-views"></dd></div>
+                      <div><dt id="result-date-label">Drawn</dt><dd><time id="result-date"></time></dd></div>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <p class="media-status" id="media-status" data-media-status role="status" hidden></p>
+              <div class="result-actions">
+                <button class="primary" type="button" id="result-draw-again"><span aria-hidden="true">✧</span> Draw again</button>
+                <a class="stage-link" id="source-link" target="_blank" rel="noopener noreferrer">Read on Wikipedia</a>
+              </div>
+            </div>
+            <div class="result-copy">
+              <p class="fine" id="quiz-feedback" hidden></p>
+              <div class="result-links">
+                <button class="text-button" type="button" id="share-button"><span aria-hidden="true">⤴</span> Share result</button>
+              </div>
+              <p class="excerpt-credit" id="result-credit" hidden><a id="revision-link" target="_blank" rel="noopener noreferrer">Wikipedia contributors</a> · edited excerpt · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></p>
+              <details class="media-credits" id="media-credits" data-media-credits hidden>
+                <summary>Image credits</summary>
+                <ul id="media-credit-list"></ul>
+              </details>
+            </div>
+            <div class="score-panel">
+              <span class="eyebrow">Your draw score</span>
+              <div class="score"><strong id="score-value"></strong><span>pts</span></div>
+              <p id="result-badges"></p>
+              <p id="result-percentile"></p>
+              <p id="saved-message"></p>
+            </div>
+            <div class="reason-panel">
+              <h3>How you earned your points</h3>
+              <ul id="reasons"></ul>
+              <p class="fine" id="result-edition"></p>
+            </div>
+          </article>
+          <p class="notice" id="draw-notice" role="status"></p>
+          <div class="stage-meta">
+            <a href="#pool" data-view="pool"><span aria-hidden="true">✦</span> <strong id="pool-size">348</strong> rated articles</a>
+            <span>Next draw in <time id="countdown">--:--:--</time></span>
+          </div>
+        </div>
+        <aside class="side-panel" aria-labelledby="journal-summary-title">
+          <div class="side-heading"><span class="tile-icon" aria-hidden="true">▤</span><h2 id="journal-summary-title">Achievements</h2></div>
+          <div class="stats">
+            <div><strong id="summary-discoveries">0</strong><span>Discoveries</span></div>
+            <div><strong id="summary-badges">0</strong><span>Badges</span></div>
+          </div>
+          <p id="journal-message">Your daily draws are collected here, ready to revisit any time.</p>
+          <a class="outline" href="#journal" data-view="journal">Open collection</a>
+          <div class="side-divider"></div>
+          <div class="side-heading"><span class="tile-icon alternate" aria-hidden="true">◇</span><h2>Card rarity</h2></div>
+          <p>A correct answer opens all five tiers. An incorrect answer draws a Silver or Bronze card.</p>
+          <a class="outline" href="#odds"><span aria-hidden="true">◇</span> See draw odds</a>
+        </aside>
+      </div>
+
+      <article class="field-guide" aria-labelledby="field-guide-title">
+        <header class="field-guide-header">
+          <h2 id="field-guide-title">The WikiRNG field guide</h2>
+          <p>One question leads to one real Wikipedia article. Use WikiRNG to collect the card, follow its source, or explore the article pool while you wait for tomorrow’s draw.</p>
+        </header>
+        <section class="guide-story">
+          <div>
+            <h3>How the daily Wikipedia card draw works</h3>
+            <p>Open WikiRNG and choose <strong>Start Today’s Quiz</strong>. Pick one answer and the card flips to reveal the article you drew. A correct answer gives you a chance at all five tiers. A wrong answer still earns a Silver or Bronze card, and the reveal shows you the correct answer.</p>
+            <p>Every WikiRNG card starts with a short excerpt. The front also shows the subject, rarity and UTC draw time. When licensed photographs or maps are available, they appear around the card. Select an image to see the original file, or open the article to read the full story beyond the excerpt.</p>
+            <p>There’s one daily draw per UTC date in this browser. The timer counts down to midnight UTC. You can close the tab and return before the reset to look at the same result, compare its badges or share the discovery.</p>
+            <p>Say WikiRNG reveals Shapinsay. The harbour photograph introduces the island from the water. The article explains where it sits among the Orkney Islands and why its natural harbour matters. In the October edition, this WikiRNG card is Silver with 382 pageviews.</p>
+            <a class="outline" href="#daily">Go to Daily Draw</a>
+          </div>
+          <figure>
+            <img src="guide-images/shapinsay-harbour.webp" width="330" height="247" loading="lazy" decoding="async" alt="Boats moored at Balfour Harbour on the Orkney island of Shapinsay">
+            <figcaption>Shapinsay, Orkney. <a href="https://commons.wikimedia.org/wiki/File:Shapinsay_Harbour_-_geograph.org.uk_-_485300.jpg">Colin Smith</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></figcaption>
+          </figure>
+        </section>
+        <section id="odds" class="odds-panel" aria-labelledby="odds-title">
+          <h3 id="odds-title">WikiRNG rarity tiers and daily odds</h3>
+          <p>The buttons show odds after a correct answer. With an incorrect answer, the odds are 20% Silver and 80% Bronze. Select a tier to compare both sets of odds and see its range of English Wikipedia pageviews.</p>
+          <div class="odds-buttons" id="odds-buttons" role="group" aria-label="Explore a rarity tier">
+            <button type="button" class="outline" data-tier="crown" aria-pressed="false">
+              <strong><svg class="rarity-icon" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24">
+                <path d="m3 8 4.5 3.6L12 5l4.5 6.6L21 8l-2 9H5z" fill="#f3c45c" stroke="#784b16" stroke-width="1.45" stroke-linejoin="round"/>
+                <path d="m5 17 .6 2.5h12.8L19 17z" fill="#dc9b33" stroke="#784b16" stroke-width="1.45" stroke-linejoin="round"/>
+                <path d="m12 10 2.25 3-2.25 2-2.25-2z" fill="#fff0b4" stroke="#9c632a" stroke-width="1.1"/>
+                <path d="M10.4 4.5 12 2.8l1.6 1.7L12 6z" fill="#ffe28c" stroke="#784b16" stroke-width="1.2" stroke-linejoin="round"/>
+              </svg>Crown</strong><span>0.005%</span>
+            </button>
+            <button type="button" class="outline" data-tier="diamond" aria-pressed="false">
+              <strong><svg class="rarity-icon" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24">
+                <path d="M6.3 5h11.4l4 5.2L12 20.5 2.3 10.2z" fill="#a8e0f0"/>
+                <path d="M2.3 10.2h6.2L12 20.5z" fill="#75b9d6"/>
+                <path d="M8.5 10.2 12 5l3.5 5.2-3.5 10.3z" fill="#e4faff"/>
+                <path d="M6.3 5h11.4l4 5.2L12 20.5 2.3 10.2zM2.3 10.2h19.4M12 5l-3.5 5.2L12 20.5l3.5-10.3L12 5z" fill="none" stroke="#2b617d" stroke-width="1.35" stroke-linejoin="round"/>
+              </svg>Diamond</strong><span>0.02%</span>
+            </button>
+            <button type="button" class="outline" data-tier="gold" aria-pressed="false">
+              <strong><svg class="rarity-icon" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9.3" fill="#f1bb46" stroke="#815206" stroke-width="1.45"/>
+                <circle cx="12" cy="12" r="6.8" fill="#ffdf7b" stroke="#a46e18" stroke-width="1.05"/>
+                <path d="M12 7.5 13.4 10.6 16.5 12 13.4 13.4 12 16.5 10.6 13.4 7.5 12 10.6 10.6z" fill="#fff5c6" stroke="#90601b" stroke-width="1.1" stroke-linejoin="round"/>
+              </svg>Gold</strong><span>10%</span>
+            </button>
+            <button type="button" class="outline" data-tier="silver" aria-pressed="false">
+              <strong><svg class="rarity-icon" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24">
+                <path d="M12 3c2.4 1.6 5 2.3 8 2.7v5.7c0 4.3-3.1 7.3-8 9.6-4.9-2.3-8-5.3-8-9.6V5.7c3-.4 5.6-1.1 8-2.7z" fill="#e6eff4" stroke="#52677b" stroke-width="1.45" stroke-linejoin="round"/>
+                <path d="M12 6v12.2c3.5-1.9 5.5-4.1 5.5-7V7.8C15.4 7.4 13.6 6.8 12 6z" fill="#afc2d2"/>
+                <path d="m8.4 10.8 3.6 3.6 3.6-3.6" fill="none" stroke="#52677b" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>Silver</strong><span>20%</span>
+            </button>
+            <button type="button" class="outline" data-tier="bronze" aria-pressed="true">
+              <strong><svg class="rarity-icon" aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24">
+                <path d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4z" fill="#e6a36f" stroke="#78482e" stroke-width="1.45" stroke-linejoin="round"/>
+                <path d="M12 5.9 17.3 9v6L12 18.1 6.7 15V9z" fill="#f7cca2" stroke="#a66543" stroke-width="1.05" stroke-linejoin="round"/>
+                <path d="M12 8.9v6.2m-2.7-4.7 5.4 3.2m0-3.2-5.4 3.2" fill="none" stroke="#895337" stroke-width="1.25" stroke-linecap="round"/>
+              </svg>Bronze</strong><span>69.975%</span>
+            </button>
+          </div>
+          <p id="odds-detail" role="status">The daily draw first selects a tier, then draws one article from that tier.</p>
+        </section>
+        <section class="guide-story">
+          <div>
+            <h3>What makes a WikiRNG card rare?</h3>
+            <p>WikiRNG ranks English Wikipedia articles by their total pageviews over the same complete calendar month. The least viewed articles in the eligible deck go into the rarer tiers, and the more viewed articles go toward Bronze. An article needs a complete month of data to qualify. You can still read entries with unavailable data in the article pool.</p>
+            <p>WikiRNG uses your answer to determine which tiers are available for your daily draw. The game picks a tier according to its odds, then every article within that tier has the same chance of appearing. If two articles have the same number of views, the lower Wikipedia page ID sorts first when the deck is built.</p>
+            <p>Pageviews count views of a page during the window. Someone can open a page more than once. The number describes readership for that period, so a WikiRNG article can move between tiers in a later edition. Check the month beside the figure when comparing two cards.</p>
+            <p>For example, WikiRNG lists The Volcano in British Columbia at 200 views in the same edition. It’s a small cinder cone near Lava Fork, and its card earns 271 points. Both it and Shapinsay are Silver, even though Shapinsay has more views and fewer points. The WikiRNG score rewards article traits within the deck.</p>
+            <a class="outline" href="#pool" data-view="pool">Browse article pageviews</a>
+          </div>
+          <figure>
+            <img src="guide-images/lava-lakes.webp" width="250" height="173" loading="lazy" decoding="async" alt="A lava flow at the Lava Lakes in British Columbia">
+            <figcaption>Lava Lakes, British Columbia. <a href="https://commons.wikimedia.org/wiki/File:Lava_flow_at_the_Lava_Lakes,_British_Columbia,_Canada.jpg">nass5518</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a></figcaption>
+          </figure>
+        </section>
+        <section class="guide-story">
+          <div>
+            <h3>Build your personal card collection</h3>
+            <p>The WikiRNG Achievements page keeps track of the cards you’ve unlocked. A locked slot shows its rarity and card number. Once you draw that article in the daily game, the slot shows its name and lets you open its details. Use the status buttons to see only locked or unlocked cards, or select a rarity to focus on a single tier.</p>
+            <p>A repeat draw still counts as a discovery for that day. It won’t fill a second WikiRNG slot for the same article. The number of unique cards can therefore be lower than the number of daily draws. Older cards that sit outside the current deck appear as archived discoveries.</p>
+            <p>To find a particular WikiRNG achievement, first try the Unlocked filter. It brings your discoveries to the front in date order. Use All cards again to see everything, or choose Locked to check what’s still missing without seeing the article titles in those slots.</p>
+            <p>WikiRNG achievements belong to this browser profile. There’s no sign-up, and your collection opens directly from the game. If you want to show someone an interesting find, use <strong>Share result</strong> on the card. It sends the result you choose while your collection stays local.</p>
+            <a class="outline" href="#journal" data-view="journal">Open Achievements</a>
+          </div>
+          <figure>
+            <img src="guide-images/moot-hall.webp" width="250" height="349" loading="lazy" decoding="async" alt="A wall-mounted sundial at Moot Hall with Roman numerals">
+            <figcaption>Moot Hall sundial. <a href="https://commons.wikimedia.org/wiki/File:MootHallSundial.JPG">Wilson44691</a> · Public domain</figcaption>
+          </figure>
+        </section>
+        <section class="guide-story">
+          <div>
+            <h3>Explore the article pool while you wait</h3>
+            <p>Open the WikiRNG Article Pool to look through the edition by topic. Choose Earth to explore landforms and islands, or switch to Space &amp; science for a different set of articles. The list shows each entry’s title, rarity tier and recorded pageviews.</p>
+            <p>Browsing the WikiRNG pool leaves your daily card in place. You can look at more than one topic, compare how often two articles were viewed, or open the article that interests you directly on Wikipedia. Each topic has a paginated list so you can work through it at your own pace.</p>
+            <p>After you’ve drawn your card for the day, select <strong>Draw again</strong> to see how long remains before your next opportunity. Your existing card stays available to read or share. To revisit an earlier discovery, open Achievements and filter by Unlocked instead of searching the full deck again.</p>
+            <a class="outline" href="#pool" data-view="pool">Explore the Article Pool</a>
+          </div>
+          <figure>
+            <img src="guide-images/lingavi-geo.webp" width="250" height="155" loading="lazy" decoding="async" alt="A sea stack off the rocky coast at Lingavi Geo">
+            <figcaption>Lingavi Geo sea stack. <a href="https://commons.wikimedia.org/wiki/File:Sea_stack_at_Lingavi_Geo.jpg">C. Michael Hogan</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></figcaption>
+          </figure>
+        </section>
+        <section class="faq" aria-labelledby="faq-title">
+          <h3 id="faq-title">WikiRNG FAQs</h3>
+          <details><summary>Where do the WikiRNG articles come from?</summary><p>The deck samples English Wikipedia’s featured articles across several subjects. The WikiRNG article pool shows what’s in the current edition. Each card links to its source article, and the credit line links to the excerpt’s Wikipedia revision when available. The sample is much smaller than English Wikipedia itself.</p></details>
+          <details><summary>How does my WikiRNG answer affect the draw?</summary><p>A correct answer gives you a chance at Crown, Diamond, Gold, Silver or Bronze. An incorrect answer still earns a card, with 20% odds for Silver and 80% for Bronze. The points shown below your card come from article traits such as coordinates.</p></details>
+          <details><summary>What happens if I draw a card I already own?</summary><p>WikiRNG saves the new daily result, including its draw time. The existing achievement stays unlocked. The collection count tracks different articles, while the discoveries count tracks completed days in this browser.</p></details>
+          <details><summary>Can I draw another WikiRNG card today?</summary><p>WikiRNG offers one draw per UTC day in this browser. Once you submit an answer, your card is saved for the day. The next opportunity arrives at 00:00 UTC, and you can check the countdown any time by selecting Draw again.</p></details>
+          <details><summary>What if an article has no photos?</summary><p>You still get the summary, rarity, points and source link. The available illustrations depend on the article and file permissions. Some cards include maps or diagrams, and others may have no suitable media or a temporary loading problem.</p></details>
+          <details><summary>Will my WikiRNG achievements follow me to a new device?</summary><p>The collection uses local storage. A different browser, device or profile starts a separate collection. Clearing site data removes the saved draws for that profile. A private browsing session can discard them when it closes.</p></details>
+          <details><summary>When can I take the next WikiRNG quiz?</summary><p>The next question unlocks at 00:00 UTC. Use the countdown near your card if your local evening or morning falls on a different calendar day than UTC. You can browse the pool or your unlocked cards while you wait.</p></details>
+          <details><summary>What does a locked Crown slot tell me?</summary><p>The slot tells you there’s a Crown card left to discover. Selecting Crown in the WikiRNG rarity panel shows the odds and the pageview range for that tier. Use the Achievements filter to check whether your browser has already saved it. A correct answer is required for a chance at Crown.</p></details>
+        </section>
+      </article>
+    </section>
+
+    <section class="screen inner-screen" id="journal" hidden aria-labelledby="journal-title">
+      <header class="section-heading">
+        <div><h1 id="journal-title" tabindex="-1">Card achievements</h1><p>See the cards you’ve unlocked and the ones still waiting in the deck.</p></div>
+        <label class="filter">Rarity<select id="journal-filter"><option value="all">All rarities</option></select></label>
+      </header>
+      <div class="collection-controls">
+        <div class="collection-filters" role="group" aria-label="Collection status">
+          <button class="outline" type="button" data-collection-status="all" aria-pressed="true">All cards</button>
+          <button class="outline" type="button" data-collection-status="unlocked" aria-pressed="false">Unlocked</button>
+          <button class="outline" type="button" data-collection-status="locked" aria-pressed="false">Locked</button>
+        </div>
+        <p id="collection-progress" aria-live="polite"></p>
+      </div>
+      <div class="journal-empty" id="journal-empty">
+        <span class="tile-icon" aria-hidden="true">▤</span><h2 id="journal-empty-title">No cards in this view</h2>
+        <p id="journal-empty-message">Try another filter or play today’s quiz to add a card.</p>
+        <a class="primary" href="#daily" data-view="daily">Go to Daily Draw</a>
+      </div>
+      <div class="journal-grid" id="journal-list"></div>
+      <div class="pool-controls collection-pager" id="collection-pager">
+        <button class="outline" id="collection-prev" type="button">Previous</button>
+        <p id="collection-range" aria-live="polite"></p>
+        <button class="outline" id="collection-next" type="button">Next</button>
+      </div>
+    </section>
+
+    <section class="screen inner-screen" id="pool" hidden aria-labelledby="pool-title">
+      <header class="section-heading">
+        <div><h1 id="pool-title" tabindex="-1">Article pool</h1><p>Inspect the archived Wikipedia edition used for daily draws.</p></div>
+        <label class="filter">Topic<select id="pool-filter"><option value="all">All topics</option></select></label>
+      </header>
+      <p class="pool-source"><a href="https://en.wikipedia.org/wiki/Wikipedia:Featured_articles" target="_blank" rel="noopener noreferrer">English Wikipedia featured article index</a> · <span id="edition-date"></span></p>
+      <div class="pool-controls">
+        <button class="outline" id="pool-prev" type="button">Previous</button>
+        <p id="pool-range" aria-live="polite"></p>
+        <button class="outline" id="pool-next" type="button">Next</button>
+      </div>
+      <div class="journal-grid" id="pool-list"></div>
+    </section>
+
+    <section class="screen inner-screen" id="guide" hidden aria-labelledby="guide-title">
+      <header class="section-heading"><div><h1 id="guide-title" tabindex="-1">How to play</h1><p>A few rules for your daily discovery.</p></div></header>
+      <div class="guide-stack">
+        <details open><summary>How often can I draw?</summary><p>Submit one answer per UTC day to draw a card. A correct answer opens all five tiers. An incorrect answer earns a Silver or Bronze card. <a href="#odds">Compare the rarity odds.</a></p></details>
+        <details><summary>How are points earned?</summary><p>Every article starts at 100 points. Traits in the edition earn badges. Only the highest-scoring badge counts in each of the topic, title and article metadata groups. Rarity follows pageviews.</p></details>
+        <details><summary>What does “top of the pool” mean?</summary><p>It compares article scores in the edition, including ties. The score shows how unusual the article’s badge traits are within this edition.</p></details>
+        <details><summary>Where are my discoveries saved?</summary><p>Daily results stay in this browser’s local storage. Clearing site data or switching browsers separates your journal. You can share a result as text without publishing your journal.</p></details>
+        <details><summary>Where do the discoveries come from?</summary><p>This edition is a sample from the English Wikipedia featured article index, with excerpts and metadata from Wikipedia. Each result shows its source and edition. Older draws keep the score and size of their original pool. <a href="#pool" data-view="pool">Browse the current pool.</a></p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div><a class="brand" href="#daily" data-view="daily"><img class="brand-logo" src="brand/icon-192.png" width="36" height="36" alt="">WikiRNG</a><p>An independent Wikipedia card game.</p></div>
+      <div><h2>Play</h2><a href="#daily" data-view="daily">Daily Draw</a><a href="#journal" data-view="journal">Achievements</a></div>
+      <div><h2>Learn</h2><a href="#guide" data-view="guide">How to Play</a><a href="#pool" data-view="pool">Article Pool</a><a href="/about/#sources">Sources</a></div>
+      <div><h2>Information</h2><a href="/about/">About Us</a><a href="/privacy/">Privacy Policy</a><a href="/contact/">Contact</a><a href="/terms/">Terms of Service</a></div>
+    </div>
+    <div class="shell footer-bottom">WikiRNG.org</div>
+  </footer>
+
+  <dialog id="quiz-dialog" aria-labelledby="quiz-title">
+    <div class="dialog-title"><h2 id="quiz-title">Today’s Quiz</h2><form method="dialog"><button class="plain-close" aria-label="Close quiz" type="submit">×</button></form></div>
+    <p class="fine">A correct answer opens all five rarity tiers. An incorrect answer still unlocks a Silver or Bronze card.</p>
+    <p id="quiz-question"></p>
+    <div class="quiz-options" id="quiz-options" role="group" aria-labelledby="quiz-question"></div>
+  </dialog>
+  <dialog id="draw-limit-dialog" aria-labelledby="draw-limit-title" aria-describedby="draw-limit-message">
+    <h2 id="draw-limit-title">One draw per day</h2>
+    <p id="draw-limit-message">You’ve used today’s draw. Come back tomorrow!</p>
+    <p class="fine">Next draw in <time id="draw-limit-countdown">--:--:--</time></p>
+    <form method="dialog"><button class="primary" type="submit" autofocus>Got it</button></form>
+  </dialog>
+  <dialog id="collection-dialog" aria-labelledby="collection-title">
+    <form class="collection-close" method="dialog"><button class="plain-close" aria-label="Close card detail" type="submit" autofocus>×</button></form>
+    <div class="collection-locked" id="collection-locked" hidden>
+      <h2 id="collection-locked-title"></h2>
+      <p id="collection-locked-rarity"></p>
+      <p>Unlock this card by drawing it in the daily game.</p>
+    </div>
+    <div class="knowledge-stage collection-stage" id="collection-unlocked" hidden>
+      <div class="unlock-banner">
+        <p class="knowledge-kicker">Card Unlocked</p>
+        <p class="unlock-subtitle" id="collection-banner-rarity"></p>
+      </div>
+      <div class="article-gallery" id="collection-gallery" data-media-gallery role="group" aria-label="Images from this article"></div>
+      <div class="knowledge-frame">
+        <div class="knowledge-front">
+          <p class="knowledge-collection">WikiRNG Field Collection</p>
+          <h2 id="collection-title"></h2>
+          <p class="knowledge-summary" id="collection-description" lang="en"></p>
+          <dl class="knowledge-details">
+            <div><dt>Rarity</dt><dd id="collection-rarity"></dd></div>
+            <div><dt>Topic</dt><dd id="collection-topic"></dd></div>
+            <div><dt>Pageviews</dt><dd id="collection-views"></dd></div>
+            <div><dt id="collection-date-label">Drawn</dt><dd><time id="collection-date"></time></dd></div>
+          </dl>
+        </div>
+      </div>
+      <p class="media-status" data-media-status role="status" hidden></p>
+      <div class="collection-credits">
+        <p class="fine" id="collection-credit" hidden><a id="collection-revision" target="_blank" rel="noopener noreferrer">Wikipedia contributors</a> · edited excerpt · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></p>
+        <details class="media-credits" data-media-credits hidden>
+          <summary>Image credits</summary>
+          <ul></ul>
+        </details>
+      </div>
+      <a class="collection-source" id="collection-source" target="_blank" rel="noopener noreferrer">Read on Wikipedia</a>
+    </div>
+  </dialog>
+  <dialog id="install-dialog" aria-labelledby="install-title">
+    <div class="dialog-title"><h2 id="install-title">Install WikiRNG</h2><form method="dialog"><button class="plain-close" aria-label="Close" type="submit">×</button></form></div>
+    <p>Use your browser’s menu to install WikiRNG or add it to your home screen. On iPhone or iPad, open Share in Safari and choose Add to Home Screen.</p>
+    <button class="outline" id="copy-link" type="button">Copy site link</button>
+    <button class="primary" id="native-install" type="button" hidden>Install now</button>
+    <input id="install-url" type="url" value="https://wikirng.org/" aria-label="WikiRNG site link" readonly hidden>
+  </dialog>
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <div class="dialog-title"><h2 id="share-title">Share this discovery</h2><form method="dialog"><button class="plain-close" aria-label="Close" type="submit">×</button></form></div>
+    <label for="share-text">Result text</label>
+    <textarea id="share-text" rows="5" readonly></textarea>
+    <button class="primary" type="button" id="copy-result">Copy result</button>
+  </dialog>
+  <p id="announcer" class="sr-only" role="status" aria-live="polite"></p>
+</body>
+</html>
