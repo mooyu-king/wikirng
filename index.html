@@ -91,7 +91,7 @@
               </div>
             </div>
             <div class="result-copy">
-              <p class="fine" id="quiz-feedback" hidden></p>
+              <div class="quiz-feedback" id="quiz-feedback" hidden></div>
               <div class="result-links">
                 <button class="text-button share-trigger" type="button" id="share-button">
                   <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m8.5 10.5 7-4m-7 7 7 4"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="5" r="2.5"/><circle cx="18" cy="19" r="2.5"/></svg>
@@ -320,9 +320,15 @@
 
   <dialog id="quiz-dialog" aria-labelledby="quiz-title">
     <div class="dialog-title"><h2 id="quiz-title">Today’s Quiz</h2><form method="dialog"><button class="plain-close" aria-label="Close quiz" type="submit">×</button></form></div>
-    <p class="fine">A correct answer opens all five rarity tiers. An incorrect answer still unlocks a Silver or Bronze card.</p>
-    <p id="quiz-question"></p>
-    <div class="quiz-options" id="quiz-options" role="group" aria-labelledby="quiz-question"></div>
+    <div id="quiz-prompt">
+      <p class="fine">A correct answer opens all five rarity tiers. An incorrect answer still unlocks a Silver or Bronze card.</p>
+      <p id="quiz-question"></p>
+      <div class="quiz-options" id="quiz-options" role="group" aria-labelledby="quiz-question"></div>
+    </div>
+    <div class="quiz-reaction" id="quiz-reaction" hidden>
+      <div class="quiz-particles" id="quiz-particles" aria-hidden="true"></div>
+      <div class="quiz-feedback" id="quiz-reaction-feedback" tabindex="-1"></div>
+    </div>
   </dialog>
   <dialog id="draw-limit-dialog" aria-labelledby="draw-limit-title" aria-describedby="draw-limit-message">
     <h2 id="draw-limit-title">One draw per day</h2>

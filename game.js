@@ -334,6 +334,23 @@ function conciseSummary(summary) {
   return lead.slice(0, breakAt > 0 ? breakAt : 188).replace(/[,;:]$/, '') + '…';
 }
 
+function renderQuizFeedback(target, answer) {
+  target.hidden = !answer;
+  target.replaceChildren();
+  if (!answer) return;
+  const correct = answer.correct === true;
+  target.dataset.outcome = correct ? 'correct' : 'incorrect';
+  const icon = element('span', 'quiz-feedback-icon', correct ? '✓' : '☂');
+  icon.setAttribute('aria-hidden', 'true');
+  const copy = element('div', 'quiz-feedback-copy');
+  copy.append(
+    element('strong', null, correct ? 'Correct!' : 'Incorrect answer'),
+    element('p', 'quiz-feedback-answer', (correct ? '' : 'Correct answer: ') + answer.answer)
+  );
+  if (answer.rarityRestricted === true) copy.append(element('p', 'quiz-feedback-note', 'Silver or Bronze draw'));
+  target.append(icon, copy);
+}
+
 function renderResult(article, stored, animateReveal = false) {
   revealed = article;
   byId('draw-card').hidden = true;
@@ -347,11 +364,7 @@ function renderResult(article, stored, animateReveal = false) {
   writeRarity(byId('result-card-type'), article);
   byId('result-topic').textContent = article.topic;
   byId('result-views').textContent = viewLabel(article);
-  byId('quiz-feedback').hidden = !quizAnswer;
-  byId('quiz-feedback').textContent = quizAnswer
-    ? (quizAnswer.correct ? 'Correct! ' : 'Correct answer · ') + quizAnswer.answer
-    : '';
-  if (quizAnswer?.rarityRestricted === true) byId('quiz-feedback').append(' · Silver or Bronze draw');
+  renderQuizFeedback(byId('quiz-feedback'), quizAnswer);
   byId('result-description').textContent = conciseSummary(article.summary);
   writeCardDate('result', article.drawnAt, resolvedDay);
   byId('source-link').href = sourceFor(article);
@@ -382,6 +395,7 @@ function renderResult(article, stored, animateReveal = false) {
 }
 
 function renderDaily() {
+  if (busy && byId('quiz-dialog').open) return;
   const current = storedResult(resolvedDay);
   if (current) {
     renderResult(current.article, current.stored);
@@ -459,6 +473,8 @@ function requestDailyDraw() {
   }
   quizDay = resolvedDay;
   const question = questionFor(quizDay);
+  byId('quiz-prompt').hidden = false;
+  byId('quiz-reaction').hidden = true;
   byId('quiz-question').textContent = question.prompt;
   const options = byId('quiz-options');
   options.replaceChildren();
@@ -471,13 +487,38 @@ function requestDailyDraw() {
   byId('quiz-dialog').showModal();
 }
 
+async function showQuizReaction(answer) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const reaction = byId('quiz-reaction');
+  const feedback = byId('quiz-reaction-feedback');
+  const particles = byId('quiz-particles');
+  const correct = answer.correct === true;
+  const colors = ['#dc9238', '#279074', '#d16a82', '#7062b2', '#d3ad32'];
+  reaction.dataset.outcome = correct ? 'correct' : 'incorrect';
+  renderQuizFeedback(feedback, answer);
+  particles.replaceChildren();
+  for (let index = 0; index < 28; index += 1) {
+    const piece = element('span');
+    piece.style.setProperty('--piece-x', (3 + (index * 41 % 94)) + '%');
+    piece.style.setProperty('--piece-delay', (index % 7 * 22) + 'ms');
+    piece.style.setProperty('--piece-color', colors[index % colors.length]);
+    particles.append(piece);
+  }
+  byId('quiz-prompt').hidden = true;
+  reaction.hidden = false;
+  feedback.focus({ preventScroll: true });
+  await Promise.allSettled(reaction.getAnimations({ subtree: true }).map((animation) => animation.finished));
+}
+
 async function startDaily(selected) {
-  if (busy || !byId('quiz-dialog').open) return;
+  const quiz = byId('quiz-dialog');
+  if (busy || !quiz.open) return;
   busy = true;
   byId('draw-button').disabled = true;
   byId('draw-button-label').textContent = 'Unlocking your card…';
   byId('draw-notice').textContent = '';
-  byId('quiz-dialog').close();
+  const controls = quiz.querySelectorAll('button');
+  controls.forEach((button) => { button.disabled = true; });
   try {
     const dayAnswered = quizDay;
     const question = questionFor(dayAnswered);
@@ -492,6 +533,8 @@ async function startDaily(selected) {
     const result = navigator.locks
       ? await navigator.locks.request('curiodraw-preview-daily', draw)
       : draw();
+    if (result?.fresh && result.date === dayKey()) await showQuizReaction(result.article.quizAnswer);
+    if (quiz.open) quiz.close();
     updateClock();
     renderJournal();
     if (result?.date === resolvedDay) {
@@ -502,9 +545,14 @@ async function startDaily(selected) {
       byId('draw-notice').textContent = 'A new UTC day has started. Open today’s quiz again.';
     }
   } catch {
+    if (quiz.open) quiz.close();
+    updateClock();
+    renderDaily();
     byId('draw-notice').textContent = 'We couldn’t open this draw. Try again.';
   } finally {
     busy = false;
+    controls.forEach((button) => { button.disabled = false; });
+    byId('quiz-particles').replaceChildren();
     byId('draw-button').disabled = false;
     byId('draw-button-label').textContent = 'Start Today’s Quiz';
   }
@@ -539,6 +587,9 @@ for (const button of byId('odds-buttons').querySelectorAll('button')) {
 }
 showOdds('bronze');
 byId('draw-button').addEventListener('click', requestDailyDraw);
+byId('quiz-dialog').addEventListener('cancel', (event) => {
+  if (busy) event.preventDefault();
+});
 byId('result-draw-again').addEventListener('click', requestDailyDraw);
 byId('pool-filter').addEventListener('change', () => { poolPage = 0; renderPool(); });
 byId('pool-prev').addEventListener('click', () => { poolPage -= 1; renderPool(); });
